@@ -1,84 +1,102 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-//  WHITISH SKINCARE — Google Apps Script
-//  Paste this entire file into your Google Sheets Script Editor
-//  Extensions → Apps Script → replace any existing code → Save → Deploy
-// ═══════════════════════════════════════════════════════════════════════════════
-//
-//  HOW TO SET UP (step-by-step):
-//  ─────────────────────────────
-//  1. Open your Google Sheet.
-//  2. Click Extensions → Apps Script.
-//  3. Delete any existing code and paste this entire file.
-//  4. Click Save (floppy disk icon).
-//  5. Click Deploy → New Deployment.
-//  6. Click the gear icon next to "Select type" → choose Web App.
-//  7. Set "Execute as" → Me
-//     Set "Who has access" → Anyone
-//  8. Click Deploy → Authorise Access → Allow.
-//  9. Copy the Web App URL shown.
-// 10. Paste that URL into BOTH of these files (replace the placeholder):
-//       - script.js   →  const SHEET_URL = 'PASTE_URL_HERE';
-//       - admin.html  →  const SHEET_URL = 'PASTE_URL_HERE';
-//
-//  SHEET COLUMNS (auto-created on first order):
-//  A: Order ID | B: Date | C: Name | D: Phone | E: Address
-//  F: Products | G: Quantities | H: Total | I: Status
+//  WHITISH SKINCARE — Google Apps Script  (re-deploy after any change)
+//  Extensions → Apps Script → paste → Save → Deploy → New Deployment
+//  Execute as: Me  |  Who has access: Anyone
 // ═══════════════════════════════════════════════════════════════════════════════
 
 var SHEET_NAME = 'Orders';
 
 var HEADERS = [
   'Order ID', 'Order Date', 'Name', 'Phone', 'Address',
-  'Products', 'Quantities', 'Total', 'Status'
+  'Products', 'Quantities', 'Total', 'Payment', 'Status'
 ];
 
+// ── CORS helper ───────────────────────────────────────────────────────────────
+function corsResponse(data) {
+  var output = ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+  return output;
+}
+
+// ── GET ───────────────────────────────────────────────────────────────────────
 function doGet(e) {
   var action = e && e.parameter && e.parameter.action;
   if (action === 'getOrders') return handleGetOrders();
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'Whitish Admin API is running.' }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return corsResponse({ status: 'Whitish Admin API is running.' });
 }
 
+// ── POST ──────────────────────────────────────────────────────────────────────
 function doPost(e) {
   try {
     var payload = JSON.parse(e.postData.contents);
-    if (payload.action === 'updateStatus') return handleUpdateStatus(payload);
+    var action  = payload.action;
+    if (action === 'updateStatus') return handleUpdateStatus(payload);
+    if (action === 'deleteOrder')  return handleDeleteOrder(payload);
     return handleNewOrder(payload);
   } catch (err) {
-    return jsonResponse({ success: false, error: err.message });
+    return corsResponse({ success: false, error: err.message });
   }
 }
+
+// ── HANDLERS ──────────────────────────────────────────────────────────────────
 
 function handleGetOrders() {
   var sheet = getOrCreateSheet();
   var data  = sheet.getDataRange().getValues();
-  if (data.length <= 1) return jsonResponse([]);
+  if (data.length <= 1) return corsResponse([]);
   var headers = data[0];
-  var orders = data.slice(1).map(function(row) {
+  var orders  = data.slice(1).map(function(row) {
     var obj = {};
-    headers.forEach(function(h, i) { obj[headerToKey(h)] = row[i] !== undefined ? String(row[i]) : ''; });
+    headers.forEach(function(h, i) {
+      obj[headerToKey(h)] = row[i] !== undefined ? String(row[i]) : '';
+    });
     return obj;
   });
-  return jsonResponse(orders);
+  return corsResponse(orders);
 }
 
 function handleUpdateStatus(payload) {
-  var orderId = payload.orderId, newStatus = payload.status;
-  if (!orderId || !newStatus) return jsonResponse({ success: false, error: 'Missing orderId or status.' });
-  var sheet = getOrCreateSheet();
-  var data  = sheet.getDataRange().getValues();
-  var headers = data[0];
+  var orderId   = payload.orderId;
+  var newStatus = payload.status;
+  if (!orderId || !newStatus) return corsResponse({ success: false, error: 'Missing orderId or status.' });
+
+  var sheet      = getOrCreateSheet();
+  var data       = sheet.getDataRange().getValues();
+  var headers    = data[0];
   var orderIdCol = headers.indexOf('Order ID');
   var statusCol  = headers.indexOf('Status');
-  if (orderIdCol === -1 || statusCol === -1) return jsonResponse({ success: false, error: 'Headers not found.' });
+
+  if (orderIdCol === -1 || statusCol === -1)
+    return corsResponse({ success: false, error: 'Headers not found.' });
+
   for (var i = 1; i < data.length; i++) {
-    if (data[i][orderIdCol] === orderId) {
+    if (String(data[i][orderIdCol]) === String(orderId)) {
       sheet.getRange(i + 1, statusCol + 1).setValue(newStatus);
-      return jsonResponse({ success: true, updated: orderId, status: newStatus });
+      return corsResponse({ success: true, updated: orderId, status: newStatus });
     }
   }
-  return jsonResponse({ success: false, error: 'Order not found: ' + orderId });
+  return corsResponse({ success: false, error: 'Order not found: ' + orderId });
+}
+
+function handleDeleteOrder(payload) {
+  var orderId = payload.orderId;
+  if (!orderId) return corsResponse({ success: false, error: 'Missing orderId.' });
+
+  var sheet      = getOrCreateSheet();
+  var data       = sheet.getDataRange().getValues();
+  var headers    = data[0];
+  var orderIdCol = headers.indexOf('Order ID');
+
+  if (orderIdCol === -1) return corsResponse({ success: false, error: 'Headers not found.' });
+
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][orderIdCol]) === String(orderId)) {
+      sheet.deleteRow(i + 1);
+      return corsResponse({ success: true, deleted: orderId });
+    }
+  }
+  return corsResponse({ success: false, error: 'Order not found: ' + orderId });
 }
 
 function handleNewOrder(payload) {
@@ -92,11 +110,14 @@ function handleNewOrder(payload) {
     payload.products   || '',
     payload.quantities || '',
     payload.total      || '',
+    payload.payment    || 'COD',
     payload.status     || 'Pending'
   ]);
   sheet.autoResizeColumns(1, HEADERS.length);
-  return jsonResponse({ success: true, orderId: payload.orderId });
+  return corsResponse({ success: true, orderId: payload.orderId });
 }
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 
 function getOrCreateSheet() {
   var ss    = SpreadsheetApp.getActiveSpreadsheet();
@@ -116,15 +137,16 @@ function getOrCreateSheet() {
 
 function headerToKey(header) {
   var map = {
-    'Order ID':'orderId','Order Date':'orderDate','Name':'name',
-    'Phone':'phone','Address':'address','Products':'products',
-    'Quantities':'quantities','Total':'total','Status':'status'
+    'Order ID'  : 'orderId',
+    'Order Date': 'orderDate',
+    'Name'      : 'name',
+    'Phone'     : 'phone',
+    'Address'   : 'address',
+    'Products'  : 'products',
+    'Quantities': 'quantities',
+    'Total'     : 'total',
+    'Payment'   : 'payment',
+    'Status'    : 'status'
   };
   return map[header] || header.toLowerCase().replace(/\s+/g, '_');
-}
-
-function jsonResponse(data) {
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
 }

@@ -34,3 +34,22 @@
 .thankyou-ref strong{color:#543a65}
 .modal-thankyou .btn{min-width:200px;justify-content:center}
 @media(max-width:560px){.modal{padding:30px 22px}.modal-thankyou{padding:40px 22px}.modal-thankyou h2{font-size:28px}}
+
+/* ── PAYMENT OPTIONS ────────────────────────────────────────────────────────── */
+.payment-options{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.payment-option{display:flex;align-items:center;gap:12px;border:2px solid #e0cfe8;border-radius:8px;padding:12px 16px;background:#fdf8ff;cursor:pointer;transition:border-color .2s,background .2s,box-shadow .2s;text-align:left;width:100%}
+.payment-option:hover{border-color:#9265a6;background:#f7eeff}
+.payment-option.selected{border-color:#543a65;background:#f3e8f8;box-shadow:0 0 0 3px rgba(146,101,166,.15)}
+.payment-option-icon{flex-shrink:0;display:flex;align-items:center}
+.payment-option-label{flex:1;font-size:14px;font-weight:700;color:#30233d;display:flex;flex-direction:column;gap:2px}
+.payment-option-label small{font-size:10px;font-weight:600;letter-spacing:1.5px;color:#9b82a8;text-transform:uppercase}
+.payment-option-check{width:22px;height:22px;border-radius:50%;border:2px solid #d9c8e0;display:grid;place-items:center;font-size:12px;color:transparent;transition:all .2s;flex-shrink:0}
+.payment-option.selected .payment-option-check{background:#543a65;border-color:#543a65;color:#fff}
+.payment-error{color:#c2527a;font-size:12px;margin-top:8px;padding:9px 12px;background:#fef0f3;border-radius:4px;border-left:3px solid #c2527a}
+
+/* ── FOOTER SOCIAL BUTTONS ──────────────────────────────────────────────────── */
+.footer-socials{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.footer-social-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.3px;transition:opacity .2s,transform .2s;color:#fff;text-decoration:none}
+.footer-social-btn:hover{opacity:.88;transform:translateX(3px)}
+.footer-ig{background:radial-gradient(circle at 30% 110%,#fdf497,#fd5949 40%,#d6249f 65%,#285aeb 90%)}
+.footer-fb{background:#1877f2}
