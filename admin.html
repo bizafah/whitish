@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Whitish Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:#f4eff8;color:#2e2038;min-height:100vh}
+    a{color:inherit;text-decoration:none}
+    button{cursor:pointer;font:inherit}
+    #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0e6f7 0%,#e4d4ee 100%)}
+    .login-card{background:#fff;border-radius:10px;padding:52px 44px;width:100%;max-width:380px;box-shadow:0 12px 50px rgba(80,40,100,.13);text-align:center}
+    .login-logo{font:italic 600 32px 'Playfair Display',serif;letter-spacing:-1px;color:#3d2652;margin-bottom:4px}
+    .login-logo span{color:#c07eb8}
+    .login-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#9b82a8;margin-bottom:32px}
+    .login-card h2{font:600 22px 'Playfair Display',serif;margin-bottom:22px;color:#3d2652}
+    .login-field{position:relative;margin-bottom:18px}
+    .login-field input{width:100%;border:1px solid #d9c8e0;border-radius:5px;padding:13px 16px;font-size:14px;outline:none;transition:border-color .2s;background:#fdf8ff}
+    .login-field input:focus{border-color:#9265a6;box-shadow:0 0 0 3px rgba(146,101,166,.12)}
+    .login-btn{width:100%;background:#543a65;color:#fff;border:none;border-radius:5px;padding:14px;font-size:14px;font-weight:700;letter-spacing:.5px;transition:background .2s}
+    .login-btn:hover{background:#7a4f96}
+    .login-error{color:#c2527a;font-size:13px;margin-top:12px;min-height:20px}
+    #adminScreen{display:none;min-height:100vh;flex-direction:column}
+    #adminScreen.visible{display:flex}
+    .admin-topbar{background:#3d2652;color:#fff;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(30,10,45,.25)}
+    .admin-brand{font:italic 600 22px 'Playfair Display',serif;letter-spacing:-1px}
+    .admin-brand span{color:#d898c8}
+    .admin-brand small{font:700 9px 'DM Sans',sans-serif;letter-spacing:4px;display:block;margin-top:2px;color:#b09ec2}
+    .topbar-right{display:flex;align-items:center;gap:16px}
+    .topbar-right .last-refresh{font-size:11px;color:#b09ec2}
+    .refresh-btn{background:#5a3d72;border:none;color:#e8d5f5;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;transition:background .2s}
+    .refresh-btn:hover{background:#7a5598}
+    .logout-btn{background:transparent;border:1px solid #7a5a8a;color:#dbc8eb;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;transition:all .2s}
+    .logout-btn:hover{background:#fff1;border-color:#c5a8d8}
+    .stats-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:24px 32px;background:#fff;border-bottom:1px solid #ecdff0}
+    .stat-card{background:#f9f4fc;border-radius:7px;padding:16px 18px;border-left:3px solid #c07eb8}
+    .stat-card.pending{border-left-color:#f0a500}
+    .stat-card.accepted{border-left-color:#3cb879}
+    .stat-card.shipped{border-left-color:#3b7fd4}
+    .stat-card.completed{border-left-color:#8b5cf6}
+    .stat-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#9b82a8;margin-bottom:6px}
+    .stat-value{font-size:28px;font-weight:800;color:#3d2652}
+    .admin-controls{padding:20px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border-bottom:1px solid #ecdff0}
+    .admin-controls input[type="text"]{border:1px solid #d9c8e0;border-radius:5px;padding:9px 14px;font-size:13px;outline:none;width:220px;transition:border-color .2s}
+    .admin-controls input[type="text"]:focus{border-color:#9265a6}
+    .filter-select{border:1px solid #d9c8e0;border-radius:5px;padding:9px 14px;font-size:13px;outline:none;background:#fff;color:#3d2652;cursor:pointer}
+    .controls-count{margin-left:auto;font-size:13px;color:#9b82a8;font-weight:600}
+    .table-wrap{flex:1;padding:24px 32px;overflow-x:auto}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 16px rgba(60,30,80,.07);font-size:13px}
+    thead{background:#3d2652;color:#fff}
+    thead th{padding:14px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;white-space:nowrap}
+    tbody tr{border-bottom:1px solid #f0e8f4;transition:background .15s}
+    tbody tr:hover{background:#fdf6ff}
+    tbody tr:last-child{border-bottom:none}
+    td{padding:13px 14px;vertical-align:top;line-height:1.5}
+    td.order-id{font-weight:800;color:#543a65;white-space:nowrap;font-size:12px}
+    td.order-date{color:#9b82a8;font-size:11px;white-space:nowrap}
+    td.customer-name{font-weight:700}
+    td.products-cell{max-width:220px;color:#52405c}
+    td.total-cell{font-weight:800;white-space:nowrap;color:#3d2652}
+    .empty-row td{text-align:center;padding:60px;color:#b09ec2;font-size:14px}
+    .status-select{border:none;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:800;letter-spacing:.5px;cursor:pointer;outline:none;transition:opacity .2s}
+    .status-select:hover{opacity:.85}
+    .status-select.Pending{background:#fff3cd;color:#856404}
+    .status-select.Accepted{background:#d1f5e0;color:#1a6636}
+    .status-select.Shipped{background:#d0e8ff;color:#0a4a8a}
+    .status-select.Completed{background:#ede9fe;color:#4c1d95}
+    .status-select.Rejected{background:#fde8e8;color:#9b1c1c}
+    .table-message{text-align:center;padding:70px 20px;color:#9b82a8}
+    .table-message .icon{font-size:40px;margin-bottom:12px}
+    .table-message p{font-size:14px}
+    .spinner{width:36px;height:36px;border:3px solid #ecdff0;border-top-color:#9265a6;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .admin-toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,100px);background:#3d2652;color:#fff;padding:12px 24px;border-radius:5px;font-size:13px;z-index:99;opacity:0;transition:all .25s;pointer-events:none}
+    .admin-toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:900px){.stats-bar{grid-template-columns:repeat(3,1fr)}.table-wrap{padding:16px}.admin-controls{padding:14px 16px}thead th:nth-child(4),td:nth-child(4){display:none}}
+    @media(max-width:600px){.admin-topbar{padding:0 16px}.stats-bar{grid-template-columns:repeat(2,1fr);padding:16px}.topbar-right .last-refresh{display:none}thead th:nth-child(2),td:nth-child(2),thead th:nth-child(6),td:nth-child(6){display:none}}
+  </style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">whitish<span>✦</span></div>
+    <div class="login-sub">Admin Panel</div>
+    <h2>Sign in to continue</h2>
+    <div class="login-field">
+      <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="current-password"/>
+    </div>
+    <button class="login-btn" id="loginBtn">Sign In →</button>
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<div id="adminScreen">
+  <div class="admin-topbar">
+    <div class="admin-brand">whitish<span>✦</span><small>ADMIN PANEL</small></div>
+    <div class="topbar-right">
+      <span class="last-refresh" id="lastRefresh">Not yet loaded</span>
+      <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+      <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value" id="statTotal">—</div></div>
+    <div class="stat-card pending"><div class="stat-label">Pending</div><div class="stat-value" id="statPending">—</div></div>
+    <div class="stat-card accepted"><div class="stat-label">Accepted</div><div class="stat-value" id="statAccepted">—</div></div>
+    <div class="stat-card shipped"><div class="stat-label">Shipped</div><div class="stat-value" id="statShipped">—</div></div>
+    <div class="stat-card completed"><div class="stat-label">Completed</div><div class="stat-value" id="statCompleted">—</div></div>
+  </div>
+
+  <div class="admin-controls">
+    <input type="text" id="searchInput" placeholder="🔍  Search name, phone, order ID…"/>
+    <select class="filter-select" id="statusFilter">
+      <option value="All">All Statuses</option>
+      <option value="Pending">Pending</option>
+      <option value="Accepted">Accepted</option>
+      <option value="Shipped">Shipped</option>
+      <option value="Completed">Completed</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+    <span class="controls-count" id="controlsCount"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th><th>Date</th><th>Customer</th><th>Address</th>
+          <th>Phone</th><th>Products</th><th>Total</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <tr class="empty-row"><td colspan="8">
+          <div class="table-message"><div class="spinner"></div><p>Loading orders…</p></div>
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="admin-toast" id="adminToast"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwnAlHnFuMQ9FXntjEe057vHOB96Dqzkb0AFPduXqfL7JsOHzlkk5xs-Re368vGsMzM/exec';
+const ADMIN_PASSWORD = '1234';
+let allOrders = [];
+
+function checkSession() {
+  if (sessionStorage.getItem('whitish_admin') === 'true') showAdmin();
+}
+
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+  document.getElementById('loginError').textContent = '';
+});
+
+function doLogin() {
+  if (document.getElementById('passwordInput').value === ADMIN_PASSWORD) {
+    sessionStorage.setItem('whitish_admin', 'true');
+    showAdmin();
+  } else {
+    document.getElementById('loginError').textContent = 'Incorrect password. Please try again.';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+  }
+}
+
+function showAdmin() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminScreen').classList.add('visible');
+  loadOrders();
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('whitish_admin');
+  location.reload();
+});
+
+async function loadOrders() {
+  setTableLoading();
+  try {
+    const res = await fetch(SHEET_URL + '?action=getOrders', { cache: 'no-store' });
+    const data = await res.json();
+    allOrders = Array.isArray(data) ? data : [];
+    renderTable();
+    updateStats();
+    document.getElementById('lastRefresh').textContent =
+      'Last refreshed: ' + new Date().toLocaleTimeString('en-PK');
+  } catch(err) {
+    setTableError('Could not load orders. Check your Apps Script URL.');
+  }
+}
+
+async function updateStatus(orderId, newStatus) {
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'updateStatus', orderId, status: newStatus })
+    });
+    const order = allOrders.find(o => o.orderId === orderId);
+    if (order) order.status = newStatus;
+    updateStats();
+    adminToast('Status updated → ' + newStatus);
+  } catch(err) {
+    adminToast('Failed to update. Try refreshing.');
+  }
+}
+
+function getFiltered() {
+  const search = document.getElementById('searchInput').value.toLowerCase().trim();
+  const status = document.getElementById('statusFilter').value;
+  return allOrders.filter(o => {
+    const m = !search ||
+      (o.orderId||'').toLowerCase().includes(search) ||
+      (o.name||'').toLowerCase().includes(search) ||
+      (o.phone||'').toLowerCase().includes(search) ||
+      (o.address||'').toLowerCase().includes(search) ||
+      (o.products||'').toLowerCase().includes(search);
+    return m && (status === 'All' || o.status === status);
+  });
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  document.getElementById('controlsCount').textContent =
+    filtered.length + ' of ' + allOrders.length + ' orders';
+  const tbody = document.getElementById('ordersBody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><div class="table-message"><div class="icon">📋</div><p>${allOrders.length === 0 ? 'No orders yet.' : 'No orders match your search.'}</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = [...filtered].reverse().map(o => {
+    const s = o.status || 'Pending';
+    return `<tr>
+      <td class="order-id">${esc(o.orderId||'—')}</td>
+      <td class="order-date">${esc(o.orderDate||'—')}</td>
+      <td class="customer-name">${esc(o.name||'—')}<br><span style="font-size:11px;color:#9b82a8">${esc(o.phone||'')}</span></td>
+      <td>${esc(o.address||'—')}</td>
+      <td style="white-space:nowrap">${esc(o.phone||'—')}</td>
+      <td class="products-cell">${esc(o.products||'—')}</td>
+      <td class="total-cell">${esc(o.total||'—')}</td>
+      <td><select class="status-select ${esc(s)}" data-id="${esc(o.orderId)}" onchange="handleStatusChange(this)">
+        <option ${s==='Pending'?'selected':''}>Pending</option>
+        <option ${s==='Accepted'?'selected':''}>Accepted</option>
+        <option ${s==='Shipped'?'selected':''}>Shipped</option>
+        <option ${s==='Completed'?'selected':''}>Completed</option>
+        <option ${s==='Rejected'?'selected':''}>Rejected</option>
+      </select></td>
+    </tr>`;
+  }).join('');
+}
+
+function handleStatusChange(select) {
+  select.className = 'status-select ' + select.value;
+  updateStatus(select.dataset.id, select.value);
+}
+
+function updateStats() {
+  const c = {Pending:0,Accepted:0,Shipped:0,Completed:0,Rejected:0};
+  allOrders.forEach(o => { if (c[o.status] !== undefined) c[o.status]++; });
+  document.getElementById('statTotal').textContent    = allOrders.length;
+  document.getElementById('statPending').textContent  = c.Pending;
+  document.getElementById('statAccepted').textContent = c.Accepted;
+  document.getElementById('statShipped').textContent  = c.Shipped;
+  document.getElementById('statCompleted').textContent= c.Completed;
+}
+
+function setTableLoading() {
+  document.getElementById('ordersBody').innerHTML = `<tr class="empty-row"><td colspan="8"><div class="table-message"><div class="spinner"></div><p>Loading orders…</p></div></td></tr>`;
+}
+
+function setTableError(msg) {
+  document.getElementById('ordersBody').innerHTML = `<tr class="empty-row"><td colspan="8"><div class="table-message"><div class="icon">⚠️</div><p>${msg}</p></div></td></tr>`;
+}
+
+function esc(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let toastTimer;
+function adminToast(msg) {
+  const el = document.getElementById('adminToast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+document.getElementById('searchInput').addEventListener('input', renderTable);
+document.getElementById('statusFilter').addEventListener('change', renderTable);
+document.getElementById('refreshBtn').addEventListener('click', loadOrders);
+checkSession();
+</script>
+</body>
+</html>

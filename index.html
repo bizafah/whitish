@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#fbf3fb"/><meta name="description" content="Shop Whitish skincare: face washes, cleansers, masks and our signature facial kit. Delivery across Pakistan."/><title>Whitish | Your Glow Ritual</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Pacifico&family=Raleway:wght@600;800&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Montserrat:wght@600;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"/></head>
+<body>
+<div class="announcement">A little glow, every day ✦ Explore our skincare collection <span>✦ Free delivery on orders above Rs. 2,000</span></div>
+
+<header class="header" id="header">
+  <div class="header-inner">
+    <button class="icon-button mobile-menu" id="menuBtn" aria-label="Open menu">☰</button>
+    <a class="logo" href="#home" aria-label="Whitish home">whitish<span>✦</span><small>SKINCARE</small></a>
+    <nav id="mainNav">
+      <a href="#home">Home</a>
+      <a href="#categories">Categories</a>
+      <a href="#shop">Shop All</a>
+      <a href="#facial-kit">Facial Kit</a>
+      <a href="#about">Our Story</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button search-button" id="searchBtn" aria-label="Search">⌕</button>
+      <button class="cart-button" id="cartBtn" aria-label="Open shopping bag">♧ <span class="bag-text">Bag</span> <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="mainContent">
+  <div id="homeView">
+    <section class="hero" id="home" aria-label="Featured collections">
+      <div class="hero-slide active" style="--hero:url('https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1900&q=85')">
+        <div class="hero-content"><span class="eyebrow">THE ART OF EVERYDAY GLOW</span><h1>Glow feels<br/><em>good on you.</em></h1><p>Meet your new feel-good skincare ritual. Thoughtful essentials for fresh, radiant-looking skin.</p><a class="btn btn-dark" href="#shop">Shop the collection <span>↗</span></a></div>
+      </div>
+      <div class="hero-slide" style="--hero:url('https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1900&q=85')">
+        <div class="hero-content"><span class="eyebrow">YOUR DAILY SKINCARE EDIT</span><h1>Fresh skin.<br/><em>Fresh energy.</em></h1><p>Explore our cleansers and face washes for an everyday refresh.</p><a class="btn btn-dark" href="#categories">Explore categories <span>↗</span></a></div>
+      </div>
+      <div class="hero-slide" style="--hero:url('https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1900&q=85')">
+        <div class="hero-content"><span class="eyebrow">A LITTLE SELF-CARE MOMENT</span><h1>Make time<br/><em>for your glow.</em></h1><p>Discover our complete Whitish Facial Kit and skincare favorites.</p><a class="btn btn-dark" href="#facial-kit">Discover the kit <span>↗</span></a></div>
+      </div>
+      <div class="hero-dots" id="heroDots"><button class="active" aria-label="Slide 1"></button><button aria-label="Slide 2"></button><button aria-label="Slide 3"></button></div>
+      <div class="hero-arrows"><button id="prevSlide" aria-label="Previous slide">←</button><button id="nextSlide" aria-label="Next slide">→</button></div>
+    </section>
+
+    <div class="benefit-strip"><span>✧ Skincare made for your routine</span><span>✧ Delivery across Pakistan</span><span>✧ Easy online ordering</span></div>
+
+    <section class="marquee-wrap" aria-label="Featured product names"><div class="marquee-label">THE WHITISH EDIT <span>✦</span></div><div class="marquee"><div class="marquee-track" id="marqueeTrack"></div></div></section>
+
+    <section class="section categories-section" id="categories">
+      <div class="section-heading"><span class="eyebrow purple">FIND YOUR PERFECT ROUTINE</span><h2>Shop by <em>category</em></h2><p>Your skincare essentials, beautifully sorted.</p></div>
+      <div class="categories-grid">
+        <a class="category-card" href="#shop?category=Face%20Washes"><img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=900&q=80" alt="Face Washes" loading="lazy"><div class="category-caption"><span>01 / DAILY ESSENTIALS</span><h3>Face Washes</h3><b>Shop now ↗</b></div></a>
+        <a class="category-card" href="#shop?category=Deep%20Cleansers"><img src="https://images.unsplash.com/photo-1601049541289-9b1b7bbbfe19?auto=format&fit=crop&w=900&q=80" alt="Deep Cleansers" loading="lazy"><div class="category-caption"><span>02 / A FRESH START</span><h3>Deep Cleansers</h3><b>Shop now ↗</b></div></a>
+        <a class="category-card" href="#shop?category=Masks%20%26%20Massages"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=80" alt="Masks & Massages" loading="lazy"><div class="category-caption"><span>03 / SELF-CARE RITUALS</span><h3>Masks & Massages</h3><b>Shop now ↗</b></div></a>
+      </div>
+    </section>
+
+    <section class="feature-banner">
+      <div class="feature-photo" role="img" aria-label="Whitish skincare collection inspiration"></div>
+      <div class="feature-panel"><span class="eyebrow">MEET YOUR NEW FAVORITES</span><h2>Good skin days<br/><em>start here.</em></h2><p>From a morning cleanse to an evening self-care ritual, find the products that belong on your shelf.</p><a href="#shop" class="btn btn-white">Explore our products ↗</a></div>
+    </section>
+
+    <section class="section shop-section" id="shop">
+      <div class="section-heading"><span class="eyebrow purple">THE FULL COLLECTION</span><h2>Our <em>products</em></h2><p>Choose your favorites. Your glow ritual, your way.</p></div>
+      <div class="shop-controls">
+        <div class="filter-tabs" id="filterTabs">
+          <button class="active" data-category="All">All products</button>
+          <button data-category="Face Washes">Face Washes</button>
+          <button data-category="Deep Cleansers">Deep Cleansers</button>
+          <button data-category="Masks & Massages">Masks & Massages</button>
+          <button data-category="Kit">Facial Kit</button>
+        </div>
+        <label class="search-field">⌕ <input id="productSearch" placeholder="Search products..." aria-label="Search products"/></label>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <p class="empty-products" id="emptyProducts" hidden>No products found. Try another search.</p>
+    </section>
+
+    <section class="kit-section" id="facial-kit">
+      <div class="kit-visual"><div class="kit-visual-img" id="kitPhoto"></div><span class="kit-seal">THE<br/>COMPLETE<br/>RITUAL ✦</span></div>
+      <div class="kit-content">
+        <span class="eyebrow purple">ALL YOUR FAVORITES, ONE RITUAL</span>
+        <h2>Meet the Whitish<br/><em>Facial Kit.</em></h2>
+        <p>A special skincare set for your at-home pampering routine. Build a little time for yourself into every week.</p>
+        <div class="kit-includes">✦ A complete facial-care experience<br/>✦ Great for gifting or self-care<br/>✦ Simple online ordering</div>
+        <div class="kit-price">Rs. 4,499 <del>Rs. 5,799</del><span>22% OFF</span></div>
+        <div class="kit-buttons"><button class="btn btn-dark" id="kitAddBtn">Add kit to bag +</button><button class="btn btn-outline" id="kitDetailBtn">View details ↗</button></div>
+        <p class="kit-note">Please confirm exact kit contents with us before ordering.</p>
+      </div>
+    </section>
+
+    <section class="story-section" id="about">
+      <span class="eyebrow purple">A LOVE LETTER TO YOUR SKIN</span>
+      <h2>Beauty in <em>every little ritual.</em></h2>
+      <p>Whitish brings together face washes, cleansers and pampering treatments to help make your daily skincare routine feel special. Explore the collection and find the products that suit you.</p>
+    </section>
+
+    <section class="section faq-section" id="faq">
+      <div class="section-heading"><span class="eyebrow purple">GOOD TO KNOW</span><h2>Your questions, <em>answered.</em></h2></div>
+      <div class="faq-list">
+        <details><summary>How do I place an order?</summary><p>Add products to your bag, then click "Place Order". Fill in your name, address and phone number and we will confirm your order.</p></details>
+        <details><summary>Are the products suitable for every skin type?</summary><p>Skin reacts differently to ingredients. Read each product's ingredient list and usage directions, and patch-test before use.</p></details>
+        <details><summary>What about delivery and payment?</summary><p>Delivery area, charges, payment method and order confirmation will be communicated after your order is placed.</p></details>
+        <details><summary>What if I have a concern about a product?</summary><p>Stop using a product if irritation occurs and seek medical advice when needed. Contact our team with your order details so we can review your concern.</p></details>
+      </div>
+    </section>
+
+    <section class="disclaimer" id="disclaimer">
+      <div><span class="eyebrow purple">PLEASE READ BEFORE BUYING</span><h3>A little care goes a long way.</h3></div>
+      <p>Please read product descriptions, ingredients, directions and precautions carefully before buying. Patch-test new products, avoid contact with eyes and discontinue use if irritation occurs. Results vary by skin type and individual. Product information is not medical advice; consult a healthcare professional for specific concerns.</p>
+    </section>
+  </div>
+
+  <div id="productView" hidden></div>
+</main>
+
+<footer id="contact">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="logo" href="#home">whitish<span>✦</span><small>SKINCARE</small></a>
+      <p>A little glow, every day. Discover your everyday skincare essentials.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <a href="#shop">Shop all</a>
+      <a href="#categories">Categories</a>
+      <a href="#facial-kit">Facial Kit</a>
+      <a href="#about">About Whitish</a>
+    </div>
+    <div>
+      <h4>Help & information</h4>
+      <a href="#faq">FAQs</a>
+      <a href="#disclaimer">Product disclaimer</a>
+    </div>
+    <div>
+      <h4>Get in touch</h4>
+      <p>Questions? Reach out to us and we'll get back to you.</p>
+      <a class="contact-link" href="mailto:whitishskincare@gmail.com">whitishskincare@gmail.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© <span id="year"></span> Whitish Skincare. All rights reserved.</span>
+    <span>Made with ♡ for your glow.</span>
+  </div>
+</footer>
+
+<!-- Cart Drawer -->
+<div class="overlay" id="overlay" hidden></div>
+<aside class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden="true">
+  <div class="drawer-head">
+    <div><span class="eyebrow purple">YOUR SELECTIONS</span><h2>Your bag <span id="bagCount">(0)</span></h2></div>
+    <button class="close-button" id="closeCart" aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-subtotal"><span>Subtotal</span><strong id="cartSubtotal">Rs. 0</strong></div>
+    <p>Delivery charges will be confirmed after your order is placed.</p>
+    <button class="btn btn-dark checkout-btn" id="checkoutBtn">Place Order ↗</button>
+    <button class="continue-btn" id="continueShopping">Continue shopping</button>
+  </div>
+</aside>
+
+<!-- Order Form Modal -->
+<div class="modal-backdrop" id="orderModalBackdrop" hidden>
+  <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+    <button class="modal-close" id="closeOrderModal" aria-label="Close">×</button>
+    <div class="modal-header">
+      <span class="eyebrow purple">ALMOST THERE</span>
+      <h2 id="orderModalTitle">Complete your order</h2>
+    </div>
+    <div class="modal-order-summary" id="modalOrderSummary"></div>
+    <form id="orderForm" novalidate>
+      <div class="form-group">
+        <label for="custName">Full Name <span class="req">*</span></label>
+        <input type="text" id="custName" placeholder="e.g. Ayesha Khan" required autocomplete="name"/>
+      </div>
+      <div class="form-group">
+        <label for="custPhone">Phone Number <span class="req">*</span></label>
+        <input type="tel" id="custPhone" placeholder="e.g. 0300-1234567" required autocomplete="tel"/>
+      </div>
+      <div class="form-group">
+        <label for="custAddress">Delivery Address <span class="req">*</span></label>
+        <textarea id="custAddress" rows="3" placeholder="House no., street, city" required autocomplete="street-address"></textarea>
+      </div>
+      <div class="form-total" id="formTotal"></div>
+      <button type="submit" class="btn btn-dark form-submit-btn" id="submitOrderBtn">Confirm Order ✦</button>
+      <p class="form-note">We will contact you to confirm delivery details and payment.</p>
+    </form>
+  </div>
+</div>
+
+<!-- Thank You Modal -->
+<div class="modal-backdrop" id="thankyouModalBackdrop" hidden>
+  <div class="modal modal-thankyou" role="dialog" aria-modal="true" aria-labelledby="thankyouTitle">
+    <div class="thankyou-icon">✦</div>
+    <h2 id="thankyouTitle">Order Placed!</h2>
+    <p class="thankyou-sub">Thank you for shopping with <strong>Whitish</strong>.</p>
+    <p class="thankyou-msg">Your order has been received. We'll reach out shortly to confirm delivery details and payment.</p>
+    <div class="thankyou-ref" id="thankyouRef"></div>
+    <button class="btn btn-dark" id="closeThankyou">Continue Shopping</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="script.js"></script>
+</body></html>
