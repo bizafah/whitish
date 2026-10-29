@@ -299,6 +299,15 @@ function closeOrderModal() {
   $('#orderForm').reset();
   document.querySelectorAll('.payment-option').forEach(b => b.classList.remove('selected'));
   $('#paymentError').hidden = true;
+  // Clear all field errors
+  ['custName','custPhone','custAddress'].forEach(id => {
+    const el = $('#' + id);
+    if (el) el.classList.remove('input-error');
+  });
+  ['nameError','phoneError','addressError'].forEach(id => {
+    const el = $('#' + id);
+    if (el) { el.hidden = true; el.textContent = ''; }
+  });
 }
 
 function generateOrderId() {
@@ -318,26 +327,99 @@ document.addEventListener('click', e => {
   }
 });
 
+// ── FORM VALIDATION HELPERS ───────────────────────────────────────────────────
+
+// Accepted Pakistan formats: 03XX-XXXXXXX, 03XXXXXXXXX, +923XXXXXXXXX, 923XXXXXXXXX
+// Must resolve to exactly 11 digits starting with 03 (or international equiv.)
+function isValidPakPhone(raw) {
+  // Strip spaces, dashes, parentheses
+  let cleaned = raw.replace(/[\s\-().]/g, '');
+  // Convert +92 or 92 prefix to 0
+  if (cleaned.startsWith('+92')) cleaned = '0' + cleaned.slice(3);
+  else if (cleaned.startsWith('92') && cleaned.length === 12) cleaned = '0' + cleaned.slice(2);
+  // Must be exactly 11 digits, starting with 03
+  return /^03[0-9]{9}$/.test(cleaned);
+}
+
+function setFieldError(inputEl, errorEl, message) {
+  inputEl.classList.add('input-error');
+  errorEl.textContent = message;
+  errorEl.hidden = false;
+}
+
+function clearFieldError(inputEl, errorEl) {
+  inputEl.classList.remove('input-error');
+  errorEl.hidden = true;
+  errorEl.textContent = '';
+}
+
+// Clear errors on input so user gets instant feedback as they type/fix
+$('#custName').addEventListener('input', () =>
+  clearFieldError($('#custName'), $('#nameError')));
+$('#custPhone').addEventListener('input', () =>
+  clearFieldError($('#custPhone'), $('#phoneError')));
+$('#custAddress').addEventListener('input', () =>
+  clearFieldError($('#custAddress'), $('#addressError')));
+
 // ── SUBMIT ORDER ──────────────────────────────────────────────────────────────
 async function submitOrder(e) {
   e.preventDefault();
 
-  const name    = $('#custName').value.trim();
-  const phone   = $('#custPhone').value.trim();
-  const address = $('#custAddress').value.trim();
+  const nameEl    = $('#custName');
+  const phoneEl   = $('#custPhone');
+  const addressEl = $('#custAddress');
 
-  if (!name || !phone || !address) {
-    toast('Please fill in all required fields.');
-    return;
+  const name    = nameEl.value.trim();
+  const phone   = phoneEl.value.trim();
+  const address = addressEl.value.trim();
+
+  // ── Run all validations, collect errors ──
+  let hasError = false;
+
+  // Name
+  if (!name) {
+    setFieldError(nameEl, $('#nameError'), 'Please enter your full name.');
+    hasError = true;
+  } else {
+    clearFieldError(nameEl, $('#nameError'));
   }
 
-  // Payment method validation
+  // Phone — must be present AND a valid Pakistan number
+  if (!phone) {
+    setFieldError(phoneEl, $('#phoneError'), 'Please enter your phone number.');
+    hasError = true;
+  } else if (!isValidPakPhone(phone)) {
+    setFieldError(phoneEl, $('#phoneError'),
+      'Enter a valid Pakistan mobile number (e.g. 0300-1234567 or 03001234567).');
+    hasError = true;
+  } else {
+    clearFieldError(phoneEl, $('#phoneError'));
+  }
+
+  // Address
+  if (!address) {
+    setFieldError(addressEl, $('#addressError'), 'Please enter your delivery address.');
+    hasError = true;
+  } else {
+    clearFieldError(addressEl, $('#addressError'));
+  }
+
+  // Payment method
   if (!selectedPayment) {
     $('#paymentError').hidden = false;
-    $('#paymentError').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    hasError = true;
+  } else {
+    $('#paymentError').hidden = true;
+  }
+
+  // Stop here if anything failed — scroll to first error
+  if (hasError) {
+    const firstErr = $('#orderModal').querySelector('.field-error:not([hidden])');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
+  // ── All good — build and submit ──
   const entries = Object.entries(cart)
     .filter(([, q]) => q > 0)
     .map(([id, q]) => ({ p: products.find(p => p.id === id), q }))
@@ -372,11 +454,12 @@ async function submitOrder(e) {
     console.log('Order submitted (no-cors):', err.message);
   }
 
+  const confirmedPayment = selectedPayment;
   cart = {};
   selectedPayment = '';
   saveCart();
   closeOrderModal();
-  showThankyou(orderId, name, selectedPayment);
+  showThankyou(orderId, name, confirmedPayment);
 
   btn.disabled    = false;
   btn.textContent = 'Confirm Order ✦';

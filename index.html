@@ -182,14 +182,17 @@
       <div class="form-group">
         <label for="custName">Full Name <span class="req">*</span></label>
         <input type="text" id="custName" placeholder="e.g. Ayesha Khan" required autocomplete="name"/>
+        <p class="field-error" id="nameError" hidden></p>
       </div>
       <div class="form-group">
         <label for="custPhone">Phone Number <span class="req">*</span></label>
         <input type="tel" id="custPhone" placeholder="e.g. 0300-1234567" required autocomplete="tel"/>
+        <p class="field-error" id="phoneError" hidden></p>
       </div>
       <div class="form-group">
         <label for="custAddress">Delivery Address <span class="req">*</span></label>
         <textarea id="custAddress" rows="3" placeholder="House no., street, city" required autocomplete="street-address"></textarea>
+        <p class="field-error" id="addressError" hidden></p>
       </div>
       <div class="form-group">
         <label>Payment Method <span class="req">*</span></label>
